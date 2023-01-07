@@ -1,16 +1,18 @@
 import { Request, Response } from "express";
 import { CreateSpecificationUseCase } from "./CreateSpecificationUseCase";
 
-class CreateSpecificationController{
+class CreateSpecificationController {
+    constructor(private createSpecificationUseCase: CreateSpecificationUseCase) { }
 
-    constructor(private createSpecification : CreateSpecificationUseCase){}
-
-    handle( request : Request, response : Response): Response{
+    execute(request: Request, response: Response): Response {
         const { name, description } = request.body;
 
-        this.createSpecification.execute({ name, description });
+        const specification = this.createSpecificationUseCase.execute({
+            name,
+            description,
+        });
 
-        return response.status(201).send();
+        return response.status(201).json({ specification });
     }
 }
 

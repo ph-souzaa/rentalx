@@ -1,26 +1,25 @@
-import { ISpecificationRepository } from "../../repositories/implementations/ISpecificationsRepository";
+import { ISpecificationsRepository } from "../../repositories/ISpecificationsRepository";
 
 interface IRequest {
-    name: string,
-    description: string,
+    name: string;
+    description: string;
 }
-
 class CreateSpecificationUseCase {
+    constructor(private specificationsRepository: ISpecificationsRepository) { }
+    execute({ name, description }: IRequest) {
+        const specificationAlreadyExists =
+            this.specificationsRepository.findByName(name);
 
-    constructor(private SpecificationsRepository : ISpecificationRepository){}
-
-    execute({ name, description } : IRequest): void{
-
-        const specificationAlReadyExists = this.SpecificationsRepository.findByName(name);
-
-        if (specificationAlReadyExists){
-            throw new Error("Specification already exists")
+        if (specificationAlreadyExists) {
+            throw new Error("Specification already exists");
         }
-        
-        this.SpecificationsRepository.create({
+
+        const specification = this.specificationsRepository.create({
             name,
             description,
         });
+
+        return specification;
     }
 }
 
